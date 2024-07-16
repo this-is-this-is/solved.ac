@@ -1,21 +1,24 @@
 import sys
 input = sys.stdin.readline
 
-n,q = map(int, input().split())
-arrA = [[0]*(n+1)]
-arrS = [[0]*(n+1) for _ in range(n+1)]
+n, m = map(int, input().split())
+arrA = list(map(int, input().split()))
+arrS = []
+sum = 0
+for i in arrA:
+    sum += i
+    arrS.append(sum)
+
+count = 0
+arrC = [0]*m
 
 for i in range(n):
-    arrTemp = [0] + list(map(int, input().split()))
-    arrA.append(arrTemp)
+    x = arrS[i]%m
+    arrC[x] += 1
+    if(x == 0):
+        count+=1
 
-for i in range(1, n+1):
-    for j in range(1, n+1):
-        arrS[i][j] = arrS[i-1][j] + arrS[i][j-1] - arrS[i-1][j-1] + arrA[i][j]
-
-for i in range(q):
-    x1, y1, x2, y2 = map(int, input().split())
-    result = arrS[x2][y2] - arrS[x2][y1-1] - arrS[x1-1][y2] + arrS[x1-1][y1-1]
-    print(result)
-
-
+for i in range(m):
+    if(arrC[i] > 1):
+        count += (arrC[i] * (arrC[i]-1)//2) 
+print(count)
