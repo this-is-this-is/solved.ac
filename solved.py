@@ -1,30 +1,16 @@
 import sys
 input = sys.stdin.readline
 
+from collections import deque
+
 n = int(input())
-stack = []
-num = 1
-result = []
-isP = True
+myqueue = deque()
 
 for i in range(n):
-    x = int(input())
-    if stack and stack[-1] >= x :
-        stack.pop()
-        result.append("-")
-    else :
-        while isP :
-            if stack and stack[-1] == x :
-                stack.pop()
-                result.append("-")
-                break
-            elif stack and stack[-1] > x :
-                isP = False
-            stack.append(num)
-            num += 1
-            result.append("+")
-if isP :
-    for i in result:
-        print(i)
-else :
-    print("NO")
+    myqueue.appendleft(i+1)
+
+while len(myqueue) > 1 :
+    myqueue.pop()
+    myqueue.appendleft(myqueue.pop())
+
+print(myqueue[0])
