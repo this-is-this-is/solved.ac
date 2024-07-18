@@ -1,19 +1,17 @@
 import sys
 input = sys.stdin.readline
 
-from queue import PriorityQueue
-
 n = int(input())
 
-myqueue = PriorityQueue()
-result = []
+arr = []
 for i in range(n):
-    x = int(input())
-    if x == 0:
-        if myqueue.empty():
-            print('0')
-        else :
-            print(myqueue.get()[1])
-    else :
-        myqueue.put((abs(x), x))
-print(result)
+    arr.append((int(input()),i))
+
+sorted_arr = sorted(arr)
+
+max = 0
+for i in range(n):
+    if max < sorted_arr[i][1]-i:
+        max = sorted_arr[i][1]-i
+
+print(max+1)
