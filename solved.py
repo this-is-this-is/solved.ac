@@ -1,14 +1,30 @@
 import sys
 input = sys.stdin.readline
-from collections import deque
-N, L = map(int,input().split())
-mydeque = deque()
-arr = list(map(int,input().split()))
 
-for i in range(N):
-    while mydeque and mydeque[-1][0] > arr[i]:
-        mydeque.pop()
-    mydeque.append((arr[i], i))
-    if mydeque[0][1] <= i-L:
-        mydeque.popleft()
-    print(mydeque[0][0], end=' ')   
+n = int(input())
+stack = []
+num = 1
+result = []
+isP = True
+
+for i in range(n):
+    x = int(input())
+    if stack and stack[-1] >= x :
+        stack.pop()
+        result.append("-")
+    else :
+        while isP :
+            if stack and stack[-1] == x :
+                stack.pop()
+                result.append("-")
+                break
+            elif stack and stack[-1] > x :
+                isP = False
+            stack.append(num)
+            num += 1
+            result.append("+")
+if isP :
+    for i in result:
+        print(i)
+else :
+    print("NO")
