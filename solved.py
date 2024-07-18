@@ -1,16 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-from collections import deque
+from queue import PriorityQueue
 
 n = int(input())
-myqueue = deque()
 
+myqueue = PriorityQueue()
+result = []
 for i in range(n):
-    myqueue.appendleft(i+1)
-
-while len(myqueue) > 1 :
-    myqueue.pop()
-    myqueue.appendleft(myqueue.pop())
-
-print(myqueue[0])
+    x = int(input())
+    if x == 0:
+        if myqueue.empty():
+            print('0')
+        else :
+            print(myqueue.get()[1])
+    else :
+        myqueue.put((abs(x), x))
+print(result)
