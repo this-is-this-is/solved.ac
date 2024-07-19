@@ -1,7 +1,8 @@
 import sys
 input = sys.stdin.readline
 n, m = map(int, input().split())
-
+arr = list(map(int, input().split()))
+arr.sort()
 result = []
 
 def backTracking(start):
@@ -11,10 +12,10 @@ def backTracking(start):
     print("")
     return
 
-  for i in range(start,n+1):
-    result.append(i)
-    backTracking(i)
-    result.pop()
-      
-      
-backTracking(1)
+  for i in range(start,n):
+    if arr[i] not in result:
+        result.append(arr[i])
+        backTracking(0)
+        result.pop()
+
+backTracking(0)
