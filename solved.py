@@ -12,9 +12,9 @@ def backTracking(start):
     return
 
   for i in range(start,n+1):
-    if i not in result:
-      result.append(i)
-      backTracking(i)
-      result.pop()
+    result.append(i)
+    backTracking(i)
+    result.pop()
+      
       
 backTracking(1)
