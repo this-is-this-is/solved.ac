@@ -1,23 +1,17 @@
 import sys
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
+def go(a, b, c):
+    if b == 1:
+        return a % c
+    ret = go(a, b // 2, c)
+    ret = (ret * ret) % c
+    if b % 2:
+        ret = (ret * a) % c
+    return ret
 
-arr = list(map(int, input().split()))
+a, b, c = map(int, input().split())
 
-arrSum = [0]
-sum = 0
-for i in range(len(arr)):
-    sum += arr[i]
-    arrSum.append(sum)
+print(go(a, b, c))
 
-start = 0
-end = k
-max = arrSum[end] - arrSum[start]
-while end <= n:
-    if arrSum[end] - arrSum[start] > max:
-        max = arrSum[end] - arrSum[start] 
-    start+=1
-    end+=1
 
-print(max)
