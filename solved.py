@@ -1,45 +1,19 @@
 import sys
-input = sys.stdin.readline
 
-def merge_sort(s, e):
-    if e-s < 1:
+def star(row, col, sz):
+    if sz == 1:
+        a[row][col] = '*'
         return
-    global count
-    m = s + (e - s)//2
-    merge_sort(s, m)
-    merge_sort(m+1, e)
-
-    for i in range(s, e + 1):
-        tmp[i] = arr[i]
-    
-    k = s
-    index1 = s
-    index2 = m + 1
-    
-    while index1 <= m and index2 <= e:
-        if tmp[index1] <= tmp[index2]:
-            arr[k] = tmp[index1]
-            k+=1
-            index1+=1
-        else:
-            arr[k] = tmp[index2]
-            count += (index2 - k) 
-            k+=1
-            index2+=1
-
-    while index1 <= m:
-        arr[k] = tmp[index1]
-        k+=1
-        index1+=1
-
-    while index2 <= e:
-        arr[k] = tmp[index2]
-        k+=1
-        index2+=1        
+    for i in range(3):
+        for j in range(3):
+            if i != 1 or j != 1:
+                star(row + sz // 3 * i, col + sz // 3 * j, sz // 3)
 
 n = int(input())
-arr = list(map(int, input().split()))
-tmp = [0]*n
-count = 0
-merge_sort(0,n-1)
-print(count)
+a = [[' ']*n for i in range(n)]
+star(0, 0, n)
+
+for i in range(n):
+    for j in range(n):
+        sys.stdout.write(a[i][j])
+    sys.stdout.write('\n')
