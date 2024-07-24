@@ -1,31 +1,27 @@
 import sys
 input = sys.stdin.readline
 
-count = 0
-max_len = 0
-k, n = map(int, input().split())
-arr = []
+n, m = map(int, input().split())
+arr = list(map(int, input().split()))
 
-for i in range(k):
-    arr.append(int(input()))
-    
 start = 1
-end = max(arr)   
+end = sum(arr)
+max_value = 0
 
-while (start <= end):
-    mid = (start+end)//2
-
+while(start <= end):
+    mid = (start + end)//2
+    
+    len = 0
     for i in arr:
-        count += i//mid
-    
-    if count >= n:
-        max_len = mid
-        start = mid + 1
-    elif count < n:
+        if i > mid:
+            len += i - mid
+    if len < m:
         end = mid - 1
-
-    count = 0
-    
-print(max_len)
-    
+    elif len == m:
+        max_value = mid
+        break
+    else:
+        max_value = mid
+        start = mid + 1
+print(max_value)
 
