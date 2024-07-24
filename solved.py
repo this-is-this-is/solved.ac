@@ -1,27 +1,40 @@
 import sys
 input = sys.stdin.readline
+from collections import deque
 
-n, m = map(int, input().split())
-arr = list(map(int, input().split()))
+n, m, v = map(int, input().split())
 
-start = 1
-end = sum(arr)
-max_value = 0
+visited = [False] * (n+1)
+arr = [[] for _ in range(n+1)]
 
-while(start <= end):
-    mid = (start + end)//2
-    
-    len = 0
-    for i in arr:
-        if i > mid:
-            len += i - mid
-    if len < m:
-        end = mid - 1
-    elif len == m:
-        max_value = mid
-        break
-    else:
-        max_value = mid
-        start = mid + 1
-print(max_value)
+for i in range(m):
+    s, e = map(int, input().split())
+    arr[s].append(e)
+    arr[e].append(s)
 
+for i in range(n+1):
+    arr[i].sort()
+
+def DFS(start):
+    print(start, end = " ")
+    visited[start] = True
+    for i in arr[start]:
+        if not visited[i]:
+            DFS(i)
+DFS(v)
+print("")
+
+
+def BFS(start):
+    queue = deque()
+    queue.append(start)
+    visited[start] = True
+    while queue:
+        now = queue.popleft()
+        print(now, end = " ")
+        for i in arr[now]:
+            if not visited[i]:
+                visited[i] = True
+                queue.append(i)
+visited = [False] * (n+1)
+BFS(v)
