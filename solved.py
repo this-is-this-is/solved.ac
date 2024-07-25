@@ -2,39 +2,33 @@ import sys
 input = sys.stdin.readline
 from collections import deque
 
-n, m, v = map(int, input().split())
+dx = [0, 0, -1, 1]
+dy = [-1, 1, 0, 0]
 
-visited = [False] * (n+1)
-arr = [[] for _ in range(n+1)]
+n, m = map(int, input().split())
+maze = []
+visited = [[False]*m for _ in range(n)]
 
-for i in range(m):
-    s, e = map(int, input().split())
-    arr[s].append(e)
-    arr[e].append(s)
+for i in range(n):
+    tmp = list(input())
+    tmp.pop()
+    for i in range(len(tmp)):
+        tmp[i] = int(tmp[i])
+    maze.append(tmp)
 
-for i in range(n+1):
-    arr[i].sort()
-
-def DFS(start):
-    print(start, end = " ")
-    visited[start] = True
-    for i in arr[start]:
-        if not visited[i]:
-            DFS(i)
-DFS(v)
-print("")
-
-
-def BFS(start):
+def BFS(a,b):
     queue = deque()
-    queue.append(start)
-    visited[start] = True
+    queue.append((a,b))
+    visited[a][b] = True
     while queue:
-        now = queue.popleft()
-        print(now, end = " ")
-        for i in arr[now]:
-            if not visited[i]:
-                visited[i] = True
-                queue.append(i)
-visited = [False] * (n+1)
-BFS(v)
+        x1, y1 = queue.popleft()
+        for i in range(4):
+            x = x1 + dx[i]
+            y = y1 + dy[i]
+            if x >= 0 and y >=0 and x < n and y < m and maze[x][y] == 1 and not visited[x][y]:
+                visited[x][y] = True
+                maze[x][y] = maze[x1][y1] + 1
+                queue.append((x,y))
+
+BFS(0,0)
+print(maze[n-1][m-1])
