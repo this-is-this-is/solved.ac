@@ -2,33 +2,37 @@ import sys
 input = sys.stdin.readline
 from collections import deque
 
-dx = [0, 0, -1, 1]
-dy = [-1, 1, 0, 0]
-
-n, m = map(int, input().split())
-maze = []
-visited = [[False]*m for _ in range(n)]
+n = int(input())
+arr = [[] for _ in range(n+1)]
 
 for i in range(n):
-    tmp = list(input())
-    tmp.pop()
-    for i in range(len(tmp)):
-        tmp[i] = int(tmp[i])
-    maze.append(tmp)
+    tmp = list(map(int, input().split()))
+    j = 1
+    while True:
+        if tmp[j] == -1:
+            break
+        arr[tmp[0]].append((tmp[j],tmp[j+1]))
+        j+=2
 
-def BFS(a,b):
+def BFS(start):
     queue = deque()
-    queue.append((a,b))
-    visited[a][b] = True
+    queue.append(start)
+    visited[start] = True
     while queue:
-        x1, y1 = queue.popleft()
-        for i in range(4):
-            x = x1 + dx[i]
-            y = y1 + dy[i]
-            if x >= 0 and y >=0 and x < n and y < m and maze[x][y] == 1 and not visited[x][y]:
-                visited[x][y] = True
-                maze[x][y] = maze[x1][y1] + 1
-                queue.append((x,y))
+        now = queue.popleft()
+        for i in arr[now]:
+            if not visited[i[0]]:
+                visited[i[0]] = True
+                queue.append(i[0])
+                distance[i[0]] = distance[now] + i[1]
+            
+visited = [False] *(n+1)
+distance = [0] * (n+1)       
+BFS(1)
 
-BFS(0,0)
-print(maze[n-1][m-1])
+max_index = distance.index(max(distance))
+visited = [False] *(n+1)
+distance = [0] * (n+1)
+BFS(max_index)
+
+print(max(distance))
