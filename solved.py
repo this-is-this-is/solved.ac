@@ -2,28 +2,20 @@ import sys
 input = sys.stdin.readline
 from collections import deque
 
-n,m = map(int,input().split())
-arr = list(map(int, input().split()))
+n = int(input())
+k = int(input())
 
-start = max(arr)
-end = sum(arr)
-
+start = 1
+end = k
+result = 0
 while start <= end:
-    mid = (start + end) // 2
+    mid = (start + end) //2
     count = 0
-    sum = 0
-    for i in arr:
-        if sum + i > mid:
-            count+=1
-            sum = 0
-        sum+= i
-
-    if sum != 0 :
-        count+=1
-        
-    if count > m:
+    for i in range(1, n+1):
+        count += min(mid//i,n)
+    if count < k:
         start = mid + 1
     else:
-        end = mid - 1
-
-print(start)
+        result = mid
+        end = mid -1
+print(result)
