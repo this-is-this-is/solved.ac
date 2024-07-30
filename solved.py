@@ -1,28 +1,48 @@
 import sys
 input = sys.stdin.readline
+from collections import deque
 sys.setrecursionlimit(10000000)
 
-t = int(input())
-def DFS(y,x):
-    visited[y][x] = True
-    dx = [0,0,-1,1]
-    dy = [-1,1,0,0]
-    for i in range(4):
-        if y+dy[i] <= n  and x+dx[i] <= m and y+dy[i] >= 0  and x+dx[i] >= 0:
-            if visited[y+dy[i]][x+dx[i]] == False and arr[y+dy[i]][x+dx[i]] == 1:
-                DFS(y+dy[i],x+dx[i])
+def BFS(a, b):
+    global goal
+    dx = [0, 0, -1, 1]
+    dy = [-1, 1, 0, 0]
+    queue = deque()
+    queue.append((a,b))
+    visited[a][b] = True
+    while queue:
+        nowy, nowx = queue.popleft()
+        for i in range(4):
+            x = nowx + dx[i]
+            y = nowy + dy[i]
+            if x < 0 or y < 0 or x > m - 1 or y > n - 1:
+                continue
+            else:
+                if arr[y][x] == 1 and visited[y][x] == False:
+                    visited[y][x] = True
+                    queue.append((y,x))
+                    result[y][x] = result[nowy][nowx] + 1
 
-for i in range(t):
-    m, n, k= map(int,input().split())
-    count = 0
-    visited = [[False for _ in range(m+1)]for _ in range(n+1) ] 
-    arr = [[0 for _ in range(m+1)]for _ in range(n+1) ] 
-    for i in range(k):
-        x, y = map(int,input().split())
-        arr[y+1][x+1] = 1
-    for i in range(1,n+1):
-        for j in range(1,m+1):
-            if visited[i][j] == False and arr[i][j] == 1:
-                DFS(i,j)
-                count+=1
-    print(count)
+n,m = map(int, input().split())
+arr = []
+for i in range(n):
+    tmp = list(map(int, input().split()))
+    arr.append(tmp)
+
+
+result = [[0]*m for _ in range(n)]
+visited = [[False] *m for i in range(n)]
+goal = (0,0)
+
+for i in range(n):
+    for j in range(m):
+        if arr[i][j] == 2:
+            goal = (i,j)
+BFS(goal[0],goal[1])
+print(result)
+for i in range(n):
+    for j in range(m):
+        if result[i][j] == 0 and arr[i][j] == 1:
+            result[i][j] = -1
+        print(result[i][j], end = ' ')
+    print("")
