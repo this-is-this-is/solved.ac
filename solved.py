@@ -1,25 +1,36 @@
 import sys
 input = sys.stdin.readline
-from collections import deque
-sys.setrecursionlimit(10000000)
+from queue import PriorityQueue
 
-def BFS(v, time):
-    global k
-    queue = deque()
-    queue.append((v,time))
-    visited = {}
-    while queue:
-        nowV, nowT = queue.popleft()
-        
-        if nowV == k:
-            print(nowT)
-            return
-        
-        for i in [-1,1,nowV]:
-            if  nowV <= 100000 and nowV + i >= 0 and nowV + i not in visited:
-                queue.append((nowV+i,nowT+1))
-                visited[nowV + i] = 1
+n = int(sys.stdin.readline().strip())
+maxq = PriorityQueue()
+minq = PriorityQueue()
 
-n, k = map(int,input().split())
+one = 0
+for i in range(n):
 
-BFS(n, 0)
+    x = int(input())
+    if x == 1 :
+        one = 1
+    if x > 0:
+        maxq.put(-x)
+    elif x <= 0:
+        minq.put(x)
+
+result = []
+while maxq.qsize() >= 2:
+    a , b = -maxq.get(),-maxq.get()
+    if a != 1 and b != 1:
+      result.append(a*b)
+    else:
+        result.append(a)
+        result.append(b)
+if maxq.qsize() == 1:
+    result.append(-maxq.get())
+      
+while minq.qsize() >= 2:
+    result.append(minq.get()*minq.get())
+if minq.qsize() == 1:
+    result.append(minq.get())
+
+print(sum(result))
