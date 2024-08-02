@@ -1,29 +1,24 @@
 import sys
 input = sys.stdin.readline
 import math
-s, e = map(int, input().split())
 
-count= 0
-A = [0]*10000001
+min, max = map(int, input().split())
 
-for i in range(2, len(A)):
-    A[i] = i
+check = [0]*(max-min+1)
 
-for i in range(2,int(math.sqrt(len(A)))+1):
-    if A[i] == 0:
-        continue
-    else:
-        for j in range(i+i, len(A), i):
-            A[j] = 0
-for i in range(2, len(A)):
-    if A[i] == 0:
-        continue
-    tmp = A[i]
-    while A[i] <= e/tmp:
-        if A[i] >= s/tmp:
-            count+=1
-        tmp *= A[i]
-        
+for i in range(2, int(math.sqrt(max)+1)):
+    pow = i**2
+    start = int(min/pow)
+    if min % pow != 0:
+        start+=1
+    for j in range(start, int(max/pow)+1):
+        check[int(j*pow)-min] = 1
+
+count = 0
+for i in range(max-min+1):
+    if check[i] == 0:
+        count+=1
+
 print(count)
 
 
