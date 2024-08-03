@@ -1,26 +1,38 @@
 import sys
 input = sys.stdin.readline
-import math
 
-min, max = map(int, input().split())
+n = int(input())
+arr = [[] for _ in range(n)]
+visited = [False]*n
+result = [0]*n
+lcm = 1
 
-check = [0]*(max-min+1)
+def gcd(a,b):
+    if b == 0:
+        return a
+    return gcd(b, a%b)
 
-for i in range(2, int(math.sqrt(max)+1)):
-    pow = i**2
-    start = int(min/pow)
-    if min % pow != 0:
-        start+=1
-    for j in range(start, int(max/pow)+1):
-        check[int(j*pow)-min] = 1
+def DFS(v):
+    visited[v] = True
+    for i in arr[v]:
+        next = i[0]
+        if not visited[next]:
+            result[next] = result[v]*i[2]//i[1]
+            DFS(next)
 
-count = 0
-for i in range(max-min+1):
-    if check[i] == 0:
-        count+=1
+for i in range(n-1):
+    s, e , x, y = map(int, input().split())
+    arr[s].append((e, x, y))
+    arr[e].append((s, y, x))
+    lcm *= (x*y)//gcd(x,y)
 
-print(count)
+result[0] = lcm
+DFS(0)
+mgcd = result[0]
 
-
-
+for i in range(1,n):
+    mgcd = gcd(mgcd, result[i])
+    
+for i in result:
+    print(i//mgcd, end = ' ')
     
