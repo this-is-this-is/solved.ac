@@ -1,38 +1,38 @@
 import sys
 input = sys.stdin.readline
-
-n = int(input())
-arr = [[] for _ in range(n)]
-visited = [False]*n
-result = [0]*n
-lcm = 1
-
-def gcd(a,b):
-    if b == 0:
-        return a
-    return gcd(b, a%b)
+sys.setrecursionlimit(10**6)
 
 def DFS(v):
+    global isP
     visited[v] = True
     for i in arr[v]:
-        next = i[0]
-        if not visited[next]:
-            result[next] = result[v]*i[2]//i[1]
-            DFS(next)
+        if not visited[i]:
+            check[i] = (check[v]+1)%2
+            DFS(i)
+        elif check[i] == check[v]:
+            isP = False
+k = int(input())
 
-for i in range(n-1):
-    s, e , x, y = map(int, input().split())
-    arr[s].append((e, x, y))
-    arr[e].append((s, y, x))
-    lcm *= (x*y)//gcd(x,y)
-
-result[0] = lcm
-DFS(0)
-mgcd = result[0]
-
-for i in range(1,n):
-    mgcd = gcd(mgcd, result[i])
+for i in range(k):
+    v,e = map(int,input().split())
+    arr = [[] for _ in range(v+1)]
+    visited = [False]*(v+1)
+    check = [0]*(v+1)
+    isP = True
+    for j in range(e):
+        start, end = map(int,input().split())
+        arr[start].append(end)
+        arr[end].append(start)
     
-for i in result:
-    print(i//mgcd, end = ' ')
-    
+    for l in range(1, v+1):
+        if isP:
+            DFS(l)
+        else:
+            break
+
+    if isP:
+        print('YES')
+    else:
+        print('NO')
+
+
