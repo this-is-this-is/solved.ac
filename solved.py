@@ -1,45 +1,42 @@
 import sys
 input = sys.stdin.readline
+sys.setrecursionlimit(10**6)
 
-from collections import deque
+n,m = map(int, input().split())
+parent = [0]*(n+1)
 
-send = [0,0,1,1,2,2]
-receive = [1,2,0,2,0,1]
+def find(a):
+    if a == parent[a]:
+        return a
+    else:
+        parent[a] = find(parent[a])
+        return parent[a]
 
-abc = list(map(int, input().split()))
-visited = [[False for j in range(201)] for i in range(201)]
-result = [False] * 201
+def union(a,b):
+    a = find(a)
+    b = find(b)
+    if a!=b:
+        parent[b] = a
 
-def BFS():
-    queue = deque()
-    queue.append((0,0))
-    visited[0][0] = True
-    result[abc[2]] = True
-    while queue:
-        now = queue.popleft()
-        a = now[0]
-        b = now[1]
-        c = abc[2] - a - b
-        for i in range(6):
-            next = [a,b,c]
-            next[receive[i]] += next[send[i]]
-            next[send[i]] = 0
+def checkSame(a,b):
+    a = find(a)
+    b = find(b)
+    if a==b:
+        return True
+    return False
 
-            if next[receive[i]] > abc[receive[i]]:
-                next[send[i]] = next[receive[i]] - abc[receive[i]]
-                next[receive[i]] = abc[receive[i]]
+for i in range(n+1):
+    parent[i] = i
 
-            if not visited[next[0]][next[1]]:
-                visited[next[0]][next[1]] = True
-                queue.append((next[0],next[1]))
-                if next[0] == 0:
-                    result[next[2]] = True
-BFS()
-
-for i in range(len(result)):
-    if result[i]:
-        print(i, end=' ')
-        
+for i in range(m):
+    q,a,b = map(int, input().split())
+    if q == 0:
+        union(a,b)
+    else:
+        if checkSame(a,b):
+            print('YES')
+        else:
+            print('NO')
 
 
 
