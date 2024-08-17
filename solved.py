@@ -2,36 +2,33 @@ import sys
 input = sys.stdin.readline
 from queue import PriorityQueue
 
-V,E = map(int, input().split())
-k = int(input())
-distance = [sys.maxsize]*(V+1)
-visited = [False]*(V+1)
-arr = [[]for _ in range(V+1)]
-q = PriorityQueue()
+n = int(input())
+m = int(input())
+distance = [sys.maxsize]*(n+1)
+visited = [False]*(n+1)
+arr = [[]for _ in range(n+1)]
 
-for _ in range(E):
-    u,v,w = map(int, input().split())
-    arr[u].append((v,w))
+for _ in range(m):
+    s,e,w = map(int, input().split())
+    arr[s].append((e,w))
 
-q.put((0,k))
-distance[k] = 0
+s_index, e_index = map(int, input().split())
 
-while q.qsize() > 0:
-    now = q.get()
-    nowV = now[1]
-    if visited[nowV]:
-        continue
-    visited[nowV] = True
-    for tmp in arr[nowV]:
-        next = tmp[0]
-        value = tmp[1]
-        if distance[next] > distance[nowV] + value:
-            distance[next] = distance[nowV] + value
-            q.put((distance[next],next))
+def dijkstra(start, end):
+    pq = PriorityQueue()
+    pq.put((0,start))
+    distance[start] = 0
+    while pq.qsize() > 0:
+        nowNode = pq.get()
+        now = nowNode[1]
+        if not visited[now]:
+            visited[now] = True
+            for n in arr[now]:
+                if not visited[n[0]] and distance[n[0]] > distance[now] + n[1]:
+                    distance[n[0]] = distance[now] + n[1]
+                    pq.put((distance[n[0]], n[0]))
 
-for i in range(1, V+1):
-    if visited[i]:
-        print(distance[i])
-    else:
-        print("INF")
+    return distance[end]
+
+print(dijkstra(s_index,e_index))
 
