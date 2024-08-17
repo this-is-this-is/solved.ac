@@ -1,34 +1,30 @@
 import sys
 input = sys.stdin.readline
-from queue import PriorityQueue
+from heapq import heappop,heappush
 
-n = int(input())
-m = int(input())
-distance = [sys.maxsize]*(n+1)
-visited = [False]*(n+1)
-arr = [[]for _ in range(n+1)]
+n,m,k = map(int, input().split())
+w = [[]for _ in range(n+1)]
+
+distance = [[sys.maxsize]*k for _ in range(n+1)]
 
 for _ in range(m):
-    s,e,w = map(int, input().split())
-    arr[s].append((e,w))
+    a,b,c = map(int, input().split())
+    w[a].append((b,c))
 
-s_index, e_index = map(int, input().split())
+pq = [(0,1)]
+distance[1][0] = 0
 
-def dijkstra(start, end):
-    pq = PriorityQueue()
-    pq.put((0,start))
-    distance[start] = 0
-    while pq.qsize() > 0:
-        nowNode = pq.get()
-        now = nowNode[1]
-        if not visited[now]:
-            visited[now] = True
-            for n in arr[now]:
-                if not visited[n[0]] and distance[n[0]] > distance[now] + n[1]:
-                    distance[n[0]] = distance[now] + n[1]
-                    pq.put((distance[n[0]], n[0]))
+while pq:
+    cost,node = heappop(pq)
+    for nNode, nCost in w[node]:
+        sCost = cost + nCost
+        if distance[nNode][k-1] > sCost:
+            distance[nNode][k-1] = sCost
+            distance[nNode].sort()
+            heappush(pq, [sCost,nNode])
 
-    return distance[end]
-
-print(dijkstra(s_index,e_index))
-
+for i in range(1,n+1):
+    if distance[i][k-1] == sys.maxsize:
+        print(-1)
+    else:
+        print(distance[i][k-1])
