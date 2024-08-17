@@ -1,30 +1,45 @@
 import sys
+from collections import deque
 input = sys.stdin.readline
-from heapq import heappop,heappush
 
-n,m,k = map(int, input().split())
-w = [[]for _ in range(n+1)]
+m, n, h = map(int, input().split())
 
-distance = [[sys.maxsize]*k for _ in range(n+1)]
+box = [[list(map(int, input().split())) for _ in range(n)] for _ in range(h)]
+day = 0
+dxyz = [(0, -1, 0), (0, 1, 0), (0, 0, -1), (0, 0, 1), (1, 0, 0), (-1, 0, 0)]
+queue = deque()
 
-for _ in range(m):
-    a,b,c = map(int, input().split())
-    w[a].append((b,c))
+for z in range(h):
+    for y in range(n):
+        for x in range(m):
+            if box[z][y][x] == 1:
+                queue.append([z ,y, x])
 
-pq = [(0,1)]
-distance[1][0] = 0
+while queue:
+    z, y, x = queue.popleft()
+    for i in range(6):
+        dz, dy, dx = dxyz[i]
+        if 0 <= dx + x < m and 0 <= dy + y < n and 0 <= dz + z < h:
+            if box[z + dz][y + dy][x + dx] == 0:
+                box[z + dz][y + dy][x + dx] += box[z][y][x] + 1
+                queue.append([z + dz,y + dy, x + dx])
 
-while pq:
-    cost,node = heappop(pq)
-    for nNode, nCost in w[node]:
-        sCost = cost + nCost
-        if distance[nNode][k-1] > sCost:
-            distance[nNode][k-1] = sCost
-            distance[nNode].sort()
-            heappush(pq, [sCost,nNode])
+isP = True
 
-for i in range(1,n+1):
-    if distance[i][k-1] == sys.maxsize:
-        print(-1)
-    else:
-        print(distance[i][k-1])
+for z in range(h):
+    if not isP:
+        break
+    for y in range(n):
+        if not isP:
+            break
+        for x in range(m):
+            if box[z][y][x] == 0:
+                isP = False
+                break
+            if box[z][y][x] > day:
+                day = box[z][y][x]
+
+if isP == 0:
+    print(-1)
+else:
+    print(day - 1)
