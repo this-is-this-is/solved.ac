@@ -1,41 +1,32 @@
 import sys
-from collections import deque
 input = sys.stdin.readline
 
-m, n = map(int, input().split())
+n,m = map(int, input().split())
+edges = []
+distance = [sys.maxsize]*(n+1)
 
-box= [list(map(int, input().split())) for _ in range(n)]
-day = 0
-dxy = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-queue = deque() 
+for i in range(m):
+    s,e,t = map(int, input().split())
+    edges.append((s,e,t))
 
-for y in range(n):
-    for x in range(m):
-        if box[y][x] == 1:
-            queue.append([y, x])
+distance[1] = 0
 
-while queue:
-    y, x = queue.popleft()
-    for i in range(4):
-        dy, dx = dxy[i]
-        if 0 <= dx + x < m and 0 <= dy + y < n:
-            if box[y + dy][x + dx] == 0:
-                box[y + dy][x + dx] += box[y][x] + 1
-                queue.append([y + dy, x + dx])
+for _ in range(n-1):
+    for start, end, time in edges:
+        if distance[start] != sys.maxsize and distance[end] > distance[start] + time:
+            distance[end] = distance[start] + time
 
-isP = True
+cycle = False
+for start, end, time in edges:
+    if distance[start] != sys.maxsize and distance[end] > distance[start] + time:
+        cycle = True
 
-for y in range(n):
-    if not isP:
-        break
-    for x in range(m):
-        if box[y][x] == 0:
-            isP = False
-            break
-        if box[y][x] > day:
-            day = box[y][x]
-
-if isP == 0:
-    print(-1)
+if not cycle:
+    for i in range(2, n+1):
+        if distance[i] != sys.maxsize:
+            print(distance[i])
+        else:
+            print(-1)
 else:
-    print(day - 1)
+    print(-1)
+
