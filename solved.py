@@ -1,32 +1,31 @@
 import sys
 input = sys.stdin.readline
 
-n,m = map(int, input().split())
+n, s, e, m = map(int, input().split())
 edges = []
-distance = [sys.maxsize]*(n+1)
+distance = [-sys.maxsize]*n
+for _ in range(m):
+    start,end,price = map(int, input().split())
+    edges.append((start,end,price))
 
-for i in range(m):
-    s,e,t = map(int, input().split())
-    edges.append((s,e,t))
+cityMoney = list(map(int,input().split()))
 
-distance[1] = 0
+distance[s] = cityMoney[s]
 
-for _ in range(n-1):
-    for start, end, time in edges:
-        if distance[start] != sys.maxsize and distance[end] > distance[start] + time:
-            distance[end] = distance[start] + time
-
-cycle = False
-for start, end, time in edges:
-    if distance[start] != sys.maxsize and distance[end] > distance[start] + time:
-        cycle = True
-
-if not cycle:
-    for i in range(2, n+1):
-        if distance[i] != sys.maxsize:
-            print(distance[i])
-        else:
-            print(-1)
+for i in range(n+101):
+    for start, end, price in edges:
+        if distance[start] == -sys.maxsize:
+            continue
+        elif distance[start] == sys.maxsize:
+            distance[end] = sys.maxsize
+        elif distance[end] < distance[start] + cityMoney[end] - price:
+            distance[end] = distance[start] + cityMoney[end] - price
+            if i >= n-1:
+                distance[end] = sys.maxsize
+        
+if distance[e] == -sys.maxsize:
+    print("gg")
+elif distance[e] == sys.maxsize:
+    print("Gee")
 else:
-    print(-1)
-
+    print(distance[e])
