@@ -1,31 +1,28 @@
 import sys
 input = sys.stdin.readline
 
-n, s, e, m = map(int, input().split())
-edges = []
-distance = [-sys.maxsize]*n
-for _ in range(m):
-    start,end,price = map(int, input().split())
-    edges.append((start,end,price))
+n = int(input())
+m = int(input())
+distance = [[sys.maxsize for _ in range(n+1)] for _ in range(n+1)]
 
-cityMoney = list(map(int,input().split()))
+for i in range(1,n+1):
+    distance[i][i] = 0
 
-distance[s] = cityMoney[s]
+for i in range(m):
+    s,e,v = map(int, input().split())
+    if distance[s][e] > v:
+        distance[s][e] = v
 
-for i in range(n+101):
-    for start, end, price in edges:
-        if distance[start] == -sys.maxsize:
-            continue
-        elif distance[start] == sys.maxsize:
-            distance[end] = sys.maxsize
-        elif distance[end] < distance[start] + cityMoney[end] - price:
-            distance[end] = distance[start] + cityMoney[end] - price
-            if i >= n-1:
-                distance[end] = sys.maxsize
-        
-if distance[e] == -sys.maxsize:
-    print("gg")
-elif distance[e] == sys.maxsize:
-    print("Gee")
-else:
-    print(distance[e])
+for k in range(1, n+1):
+    for i in range(1,n+1):
+        for j in range(1, n+1):
+            if distance[i][j] > distance[i][k] + distance[k][j]:
+                distance[i][j] = distance[i][k] + distance[k][j]
+
+for i in range(1,n+1):
+    for j in range(1, n+1):
+        if distance[i][j] == sys.maxsize:
+            print(0, end=" ")
+        else:
+            print(distance[i][j], end=" ")
+    print("")
