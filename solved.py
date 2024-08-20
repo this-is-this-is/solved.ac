@@ -2,27 +2,18 @@ import sys
 input = sys.stdin.readline
 
 n = int(input())
-m = int(input())
-distance = [[sys.maxsize for _ in range(n+1)] for _ in range(n+1)]
+distance = [[0 for _ in range(n)] for _ in range(n)]
 
-for i in range(1,n+1):
-    distance[i][i] = 0
+for i in range(n):
+    distance[i] = list(map(int, input().split()))
 
-for i in range(m):
-    s,e,v = map(int, input().split())
-    if distance[s][e] > v:
-        distance[s][e] = v
+for k in range(n):
+    for i in range(n):
+        for j in range(n):
+            if distance[i][k] == 1 and distance[k][j] == 1:
+                distance[i][j] = 1
 
-for k in range(1, n+1):
-    for i in range(1,n+1):
-        for j in range(1, n+1):
-            if distance[i][j] > distance[i][k] + distance[k][j]:
-                distance[i][j] = distance[i][k] + distance[k][j]
-
-for i in range(1,n+1):
-    for j in range(1, n+1):
-        if distance[i][j] == sys.maxsize:
-            print(0, end=" ")
-        else:
-            print(distance[i][j], end=" ")
+for i in range(n):
+    for j in range(n):
+        print(distance[i][j], end=" ")
     print("")
