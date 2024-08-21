@@ -1,19 +1,38 @@
 import sys
 input = sys.stdin.readline
+from queue import PriorityQueue
 
-n = int(input())
-distance = [[0 for _ in range(n)] for _ in range(n)]
+def find(a):
+    if a == parent[a]:
+        return a
+    else:
+        parent[a] = find(parent[a])
+        return parent[a]
 
-for i in range(n):
-    distance[i] = list(map(int, input().split()))
+def union(a,b):
+    a = find(a)
+    b = find(b)
+    if a != b:
+        parent[b] = a
 
-for k in range(n):
-    for i in range(n):
-        for j in range(n):
-            if distance[i][k] == 1 and distance[k][j] == 1:
-                distance[i][j] = 1
+n,m = map(int, input().split())
+pq = PriorityQueue()
+parent = [0]*(n+1)
+for i in range(n+1):
+    parent[i] = i
 
-for i in range(n):
-    for j in range(n):
-        print(distance[i][j], end=" ")
-    print("")
+for i in range(m):
+    s,e,w = map(int, input().split())
+    pq.put((w,s,e))
+
+useEdge = 0
+result = 0
+
+while useEdge < n - 1:
+    w,s,e = pq.get()
+    if find(s) != find(e):
+        union(s,e)
+        result+=w
+        useEdge+=1
+
+print(result)
