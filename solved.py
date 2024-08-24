@@ -1,43 +1,23 @@
 import sys
 input = sys.stdin.readline
-from collections import deque
 
-n,m = map(int, input().split())
+n = int(input())
+arr = [list(map(int, input().split())) for _ in range(n)]
 
-arr = [[]for _ in range(n+1)]
-ladder = {}
-snake = {}
-for i in range(n):
-    s,e = map(int, input().split())
-    ladder[s] = e
+dp = [[[0] * 3 for _ in range(n)] for _ in range(n)]
 
-for i in range(m):
-    s,e = map(int, input().split())
-    snake[s] = e
-visited = [0 for _ in range(101)]
+dp[0][1][0] = 1
 
-q = deque()
+for y in range(n):
+    for x in range(2, n):  
+        if arr[y][x] == 0:  
+            dp[y][x][0] = dp[y][x-1][0] + dp[y][x-1][2]
 
-def BFS(v, count):
-    q.append((v,count))
-    visited[v] = True
-    while q:
-        now, cnt = q.popleft()
-        for i in range(1,7):
-            if now + i <= 100:
-                if now + i  == 100:
-                    print(cnt + 1)
-                    exit(0)
-                if not visited[now+i] and now+i in ladder:
-                    q.append((ladder[now + i],cnt+1))
-                    visited[now+i] = True
-                    visited[ladder[now+i]] = True
-                elif not visited[now+i] and now+i in snake:
-                    q.append((snake[now + i],cnt+1))
-                    visited[now+i] = True
-                    visited[snake[now+i]] = True
-                elif not visited[now+i]:
-                    q.append((now + i,cnt+1))
-                    visited[now+i] = True
-BFS(1, 0)
+            if y > 0:   
+                dp[y][x][1] = dp[y-1][x][1] + dp[y-1][x][2]
+ 
+            if y > 0 and arr[y-1][x] == 0 and arr[y][x-1] == 0:
+                dp[y][x][2] = dp[y-1][x-1][0] + dp[y-1][x-1][1] + dp[y-1][x-1][2]
 
+result = dp[n-1][n-1][0] + dp[n-1][n-1][1] + dp[n-1][n-1][2]
+print(result)
