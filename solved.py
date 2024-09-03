@@ -1,27 +1,36 @@
 import sys
 input = sys.stdin.readline
 from collections import deque
-sys.setrecursionlimit(10000000)
 
-def BFS(v, time):
-    global k
+
+
+def BFS(v):
+    global k, count, mintime
     queue = deque()
-    queue.append((v,time))
-    visited = {}
+    queue.append((v, 0))  
+    visited = [-1] * 100002  
+
+    visited[v] = 0  
+
     while queue:
         nowV, nowT = queue.popleft()
         if nowV == k:
-            print(nowT)
-            return
-        
-        for i in [nowV, -1, 1]:
-            if  nowV + i <= 100001 and nowV + i >= 0 and nowV + i not in visited:
-                if i == nowV:
-                    queue.appendleft((nowV+i,nowT))
-                else:
-                    queue.append((nowV+i,nowT+1))
-                visited[nowV + i] = 1
+            if nowT < mintime:
+                mintime = nowT
+                count = 1
+            elif nowT == mintime:
+                count += 1
+            continue
+        for nextV in [nowV - 1, nowV + 1, nowV * 2]:
+            if 0 <= nextV <= 100001:
+                if visited[nextV] == -1 or visited[nextV] == nowT + 1:
+                    visited[nextV] = nowT + 1
+                    queue.append((nextV, nowT + 1))
 
-n, k = map(int,input().split())
+n, k = map(int, input().split())
+mintime = sys.maxsize 
+count = 0 
 
-BFS(n, 0)
+BFS(n)
+print(mintime)
+print(count)
