@@ -1,23 +1,27 @@
 import sys
 input = sys.stdin.readline
+from collections import deque
+sys.setrecursionlimit(10000000)
 
-n = int(input())
-arr = [list(map(int, input().split())) for _ in range(n)]
+def BFS(v, time):
+    global k
+    queue = deque()
+    queue.append((v,time))
+    visited = {}
+    while queue:
+        nowV, nowT = queue.popleft()
+        if nowV == k:
+            print(nowT)
+            return
+        
+        for i in [nowV, -1, 1]:
+            if  nowV + i <= 100001 and nowV + i >= 0 and nowV + i not in visited:
+                if i == nowV:
+                    queue.appendleft((nowV+i,nowT))
+                else:
+                    queue.append((nowV+i,nowT+1))
+                visited[nowV + i] = 1
 
-dp = [[[0] * 3 for _ in range(n)] for _ in range(n)]
+n, k = map(int,input().split())
 
-dp[0][1][0] = 1
-
-for y in range(n):
-    for x in range(2, n):  
-        if arr[y][x] == 0:  
-            dp[y][x][0] = dp[y][x-1][0] + dp[y][x-1][2]
-
-            if y > 0:   
-                dp[y][x][1] = dp[y-1][x][1] + dp[y-1][x][2]
- 
-            if y > 0 and arr[y-1][x] == 0 and arr[y][x-1] == 0:
-                dp[y][x][2] = dp[y-1][x-1][0] + dp[y-1][x-1][1] + dp[y-1][x-1][2]
-
-result = dp[n-1][n-1][0] + dp[n-1][n-1][1] + dp[n-1][n-1][2]
-print(result)
+BFS(n, 0)
