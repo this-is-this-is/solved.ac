@@ -1,50 +1,35 @@
 import sys
-import heapq
-
-INF = 1e8
-
+sys.setrecursionlimit(10**6)
 input = sys.stdin.readline
 
-n, e = map(int, input().split())
+n = int(input())
+visited = [False] *(n)
+tree = [[]for _ in range(n)]
+answer = 0
+p = list(map(int, input().split()))
 
-graph = [[] for _ in range(n+1)]
+for i in range(n):
+    if p[i] != -1:
+        tree[i].append(p[i])
+        tree[p[i]].append(i)
+    else:
+        root = i
 
-for _ in range(e):
-    a, b, c = map(int, input().split())
-    graph[a].append([b, c])
-    graph[b].append([a, c])
+def DFS(num):
+    global answer
+    visited[num] = True
+    cNode = 0
+    for i in tree[num]:
+        if not visited[i] and i != deleteNode:
+            cNode += 1
+            DFS(i)
+        if cNode == 0:
+            answer += 1
 
-# 반드시 지나야하는 정점
-v1, v2 = map(int, input().split())
+deleteNode = int(input())
 
-def dijkstra(start_node):
-    queue = []
-
-    heapq.heappush(queue, [0, start_node])
-    # 거리
-    distances = [INF] * (n + 1)
-    distances[start_node] = 0
-
-    while queue:
-        current_dist, current_node = heapq.heappop(queue)
-
-        if distances[current_node] < current_dist:
-            continue
-
-        for i in graph[current_node]:
-            if i[1] + current_dist < distances[i[0]]:
-                distances[i[0]] = current_dist + i[1]
-                heapq.heappush(queue, [current_dist + i[1], i[0]])
-
-    return distances
-
-path1 = dijkstra(1)
-path2 = dijkstra(v1)
-path3 = dijkstra(v2)
-
-v1_path = path1[v1] + path2[v2] + path3[n]
-v2_path = path1[v2] + path3[v1] + path2[n]
-
-ans = min(v1_path, v2_path)
-
-print(ans if ans < INF else -1)
+if deleteNode == root:
+    print(0)
+else:
+    DFS(root)
+    print(answer)
