@@ -1,36 +1,50 @@
 import sys
+import heapq
+
+INF = 1e8
+
 input = sys.stdin.readline
-from collections import deque
 
+n, e = map(int, input().split())
 
+graph = [[] for _ in range(n+1)]
 
-def BFS(v):
-    global k, count, mintime
-    queue = deque()
-    queue.append((v, 0))  
-    visited = [-1] * 100002  
+for _ in range(e):
+    a, b, c = map(int, input().split())
+    graph[a].append([b, c])
+    graph[b].append([a, c])
 
-    visited[v] = 0  
+# 반드시 지나야하는 정점
+v1, v2 = map(int, input().split())
+
+def dijkstra(start_node):
+    queue = []
+
+    heapq.heappush(queue, [0, start_node])
+    # 거리
+    distances = [INF] * (n + 1)
+    distances[start_node] = 0
 
     while queue:
-        nowV, nowT = queue.popleft()
-        if nowV == k:
-            if nowT < mintime:
-                mintime = nowT
-                count = 1
-            elif nowT == mintime:
-                count += 1
+        current_dist, current_node = heapq.heappop(queue)
+
+        if distances[current_node] < current_dist:
             continue
-        for nextV in [nowV - 1, nowV + 1, nowV * 2]:
-            if 0 <= nextV <= 100001:
-                if visited[nextV] == -1 or visited[nextV] == nowT + 1:
-                    visited[nextV] = nowT + 1
-                    queue.append((nextV, nowT + 1))
 
-n, k = map(int, input().split())
-mintime = sys.maxsize 
-count = 0 
+        for i in graph[current_node]:
+            if i[1] + current_dist < distances[i[0]]:
+                distances[i[0]] = current_dist + i[1]
+                heapq.heappush(queue, [current_dist + i[1], i[0]])
 
-BFS(n)
-print(mintime)
-print(count)
+    return distances
+
+path1 = dijkstra(1)
+path2 = dijkstra(v1)
+path3 = dijkstra(v2)
+
+v1_path = path1[v1] + path2[v2] + path3[n]
+v2_path = path1[v2] + path3[v1] + path2[n]
+
+ans = min(v1_path, v2_path)
+
+print(ans if ans < INF else -1)
