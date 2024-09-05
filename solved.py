@@ -1,35 +1,19 @@
-import sys
-sys.setrecursionlimit(10**6)
-input = sys.stdin.readline
+n, k = map(int, input().split())
 
-n = int(input())
-visited = [False] *(n)
-tree = [[]for _ in range(n)]
-answer = 0
-p = list(map(int, input().split()))
+bag = [[0,0]]
+dp = [[0]*(k+1) for _ in range(n+1)]
 
 for i in range(n):
-    if p[i] != -1:
-        tree[i].append(p[i])
-        tree[p[i]].append(i)
-    else:
-        root = i
+    bag.append(list(map(int, input().split())))
 
-def DFS(num):
-    global answer
-    visited[num] = True
-    cNode = 0
-    for i in tree[num]:
-        if not visited[i] and i != deleteNode:
-            cNode += 1
-            DFS(i)
-        if cNode == 0:
-            answer += 1
+for i in range(1, n+1):
+    for j in range(1, k+1):
+        w = bag[i][0]
+        v = bag[i][1]
 
-deleteNode = int(input())
+        if j < w:
+            dp[i][j] = dp[i-1][j]
+        else:
+            dp[i][j] = max(dp[i-1][j], dp[i-1][j-w]+v)
 
-if deleteNode == root:
-    print(0)
-else:
-    DFS(root)
-    print(answer)
+print(dp[n][k])
