@@ -1,14 +1,20 @@
 import sys
+from collections import deque
 input = sys.stdin.readline
-string_a = ' ' + input().rstrip()
-string_b = ' ' + input().rstrip()
-dp = [[0] * len(string_b) for _ in range(len(string_a))]
 
-for i in range(1, len(string_a)):
-    for j in range(1, len(string_b)):
-        if string_a[i] == string_b[j]:
-            dp[i][j] = dp[i - 1][j - 1] + 1
+n = int(input())
+top = list(map(int, input().split()))
+
+stack = []
+answer = [0 for i in range(n)]
+
+for i in range(n):
+    while stack:
+        if stack[-1][1] > top[i]:
+            answer[i] = stack[-1][0] + 1
+            break
         else:
-            dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-            
-print(dp[-1][-1])
+            stack.pop()
+    stack.append([i, top[i]])
+      
+print(*answer)
